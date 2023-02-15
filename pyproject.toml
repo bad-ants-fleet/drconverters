@@ -1,0 +1,38 @@
+[build-system]
+requires = ["flit_core >=3.2,<4"]
+build-backend = "flit_core.buildapi"
+
+[project]
+name = "drconverters"
+description = "Producing the DNA-to-RNA output format from various cotranscriptional simulation tools."
+authors = [{name = "Stefan Badelt", email = "bad-ants-fleet@posteo.eu"}]
+readme = "README.md"
+license = {file = "LICENSE"}
+classifiers = [
+    "Intended Audience :: Science/Research",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "License :: OSI Approved :: MIT License",
+    "Development Status :: 5 - Production/Stable",
+    "Topic :: Scientific/Engineering :: Bio-Informatics",
+]
+requires-python = ">=3.9"
+dependencies = [
+    "numpy",
+    "scipy",
+]
+dynamic = ["version"]
+
+[project.scripts]
+DrKinfold= "drconverters.drkinfold:main"
+DrKinefold= "drconverters.drkinefold:main"
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+]
+
+[project.urls]
+Home = "https://github.com/ViennaRNA/drconverters"
+
