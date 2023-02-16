@@ -1,9 +1,33 @@
-# Example input for DrForna visualization
+# DrConverters: Example input for DrForna visualization
 
-This repository contains examples to produce the [DrForna] \*.drf visualization
-file format from different cotranscriptional folding simulators.
+This repository contains examples to convert the output of different
+cotranscriptional folding simulators into the \*.drf visualization file format.
 
-### Installation
+## Installation
+We provide two scripts:
+    - `DrKinfold`: A Python wrapper for Kinfold.
+    - `DrKinefold`: A Python wrapper for Kinefold.
+Both scripts rely on 
+
+We provide a few example sequences:
+
+
+## Cites
+The program wrappers provided in this repository use published software. Use them
+at your own risk, and do not forget to cite the original software:
+ - `DrKinfold` depends on [Kinfold], publised in [Flamm et al. (2001)]
+ - `DrKinefold` depends on [Kinefold], published in [Isambert (2001)]
+
+The \*.drf output format was primarily developed for [DrForna] visualization.
+If you find this visualization helpful during your analysis, consider citing
+[Tanasie et al. (2023)]
+
+The program [DrPlotter] provides additional Python visualization options, it is
+part of the [DrTransformer] Python package, which should be cited as [Badelt et
+al. (2023)].
+
+
+## Installation
 All conversion scripts require the Python bindings from the [ViennaRNA] package,
 which are most easily obtained when installing the ViennaRNA package via bioconda.
 
