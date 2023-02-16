@@ -7,17 +7,17 @@ and it can also be plotted in various flavors by the Python script `DrPlotter`
 from the [DrTransformer] package for cotranscriptional folding.
 
 ## Installation
-**Note:** This repository provides **wrapper scripts** for other programs, 
-the respective dependencies must be installed separately (see below)!
-
 The sripts provided in this repository can be installed using:
 ```sh
 pip install .
 ```
+**Note:** This repository only provides functions to convert output from other
+programs, as well as **wrapper scripts** to call those programs and convert
+output automatically. The respective dependencies must be installed separately (see below).
 
 ### Dependencies
 
-#### Kinfold
+#### Kinfold [[Flamm et al. (2000)]] & ViennaRNA [[Lorenz et al. (2011)]]
 [Kinfold] is part of the [ViennaRNA package], which can be installed via
 bioconda. First, make sure bioconda is set up properly with:
 ```sh
@@ -31,22 +31,28 @@ Second, install or update your ViennaRNA installation.
   ~$ conda install 'viennarna>=2.5.1'
 ```
 
-#### Kinefold
+#### Kinefold [[Xayaphoummine et al. (2005)]]
 [Kinefold] must be downloaded (follow the link [Kinefold]). It is important
 to have the executable `kinefold_long_static` placed in the working directory
 where `DrKinefold` is used.
 
 ### Testing
-Test the functionality via:
+Test the functionality of wrapper scripts via:
 
 ```sh
 DrKinfold --help
 DrKinefold --help
 ```
 
+## Contributing
+Did you find a bug? Or do you want to provide support for a different
+cotranscriptional folding software? Please fork the repository and submit
+a pull request. 
+
+
 ## Cites
 The program wrappers provided in this repository use published software. Use
-them at your own risk, and do not forget to cite the original software:
+them at your own risk -- ask if you have questions -- and do not forget to cite the original software:
 - `DrKinfold` depends on [Kinfold], publised in [Flamm et al. (2000)]
 - `DrKinefold` depends on [Kinefold], published in [Xayaphoummine et al. (2005)]
 
@@ -70,3 +76,5 @@ al. (2023)].
 [Xayaphoummine et al. (2005)]: <doi.org/10.1093/nar/gki447>
 [Tanasie et al. (2023)]: <https://>
 [Badelt et al. (2023)]: <https://doi.org/10.1093/bioinformatics/btad034>
+[Lorenz et al. (2011)]: <https://doi.org/10.1186/1748-7188-6-26>
+
