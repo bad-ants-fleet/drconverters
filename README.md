@@ -1,7 +1,10 @@
-# DrConverters: Example input for DrForna visualization
+# DrConverters: unified cotranscriptional folding output.
 
 This repository contains examples to convert the output of different
 cotranscriptional folding simulators into the \*.drf file format.
+This format is used for visualization by the JavaScript application [DrForna],
+and can also be plotted by the Python script [DrPlotter] from the
+[DrTransformer] repository.
 
 ## Installation
 **Note:** This repository provides **wrapper scripts** for other programs, 
