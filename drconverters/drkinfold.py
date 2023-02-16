@@ -198,14 +198,14 @@ def parse_drkinfold_args(parser):
     parser.add_argument("--tmpdir", default = 'drkinfold', action = 'store', metavar = '<str>',
             help = """Specify path for storing Kinfold output files.""")
 
-    parser.add_argument("-n", "--num", type = int, default = 1,
-            help="Number of simulations per Kinfold call.")
-
-    parser.add_argument("-p", "--processes", type = int, default = 1,
-            help="Number of individual Kinfold processes.")
+    parser.add_argument("-p", "--processes", type = int, default = 0,
+            help="Number of individual Kinfold system calls. By default, only existing data is processed.")
 
     parser.add_argument("-c", "--cpus", type = int, default = None,
             help="Maximal number of cpus used for threading.")
+
+    parser.add_argument("-n", "--num", type = int, default = 1,
+            help="Number of simulations per Kinfold call.")
 
     parser.add_argument("--k0", type = float, default = 1e5, metavar = '<flt>',
             help = """Arrhenius rate constant. Adjust to relate free energy

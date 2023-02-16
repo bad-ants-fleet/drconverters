@@ -126,18 +126,15 @@ def rnm_to_drf(rnmfile, drffile, times, t_ext):
     return seq, name
 
 def parse_drkinefold_args(parser):
-    parser.add_argument("--kinefold", default = 'kinefold_long_static', action = 'store', metavar = '<str>',
-            help = """Specify path for storing Kinfold output files.""")
-
-    parser.add_argument("-n", "--num", type = int, default = 0,
-            help="Number of Kinefold system calls. By default, only existing data is processed.")
-
     parser.add_argument("--name", default = '', metavar = '<str>',
             help = """Name your output files, name the header of your plots, etc.
             this option overwrites the fasta-header.""")
 
     parser.add_argument("--tmpdir", default = 'drkinefold', action = 'store', metavar = '<str>',
-            help = """Specify path for storing Kinfold output files.""")
+            help = """Specify path for storing Kinefold output files.""")
+
+    parser.add_argument("-p", "--processes", type = int, default = 0,
+            help="Number of individual Kinefold system calls. By default, only existing data is processed.")
 
     parser.add_argument("--t-ext", type = float, default = 0.02, metavar = '<flt>',
             help = """Time per nucleotide extension (the inverse of the transcription rate)
