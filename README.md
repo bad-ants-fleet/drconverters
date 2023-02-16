@@ -1,16 +1,23 @@
 # DrConverters: unified cotranscriptional folding output.
 
-This repository contains examples to convert the output of different
+This repository contains scripts to convert the output of different
 cotranscriptional folding simulators into the \*.drf file format.
 This format is used for visualization by the JavaScript application [DrForna],
-and can also be plotted by the Python script [DrPlotter] from the
-[DrTransformer] repository.
+and it can also be plotted in various flavors by the Python script `DrPlotter`
+from the [DrTransformer] package for cotranscriptional folding.
 
 ## Installation
 **Note:** This repository provides **wrapper scripts** for other programs, 
-the respective dependencies must be installed separately!
+the respective dependencies must be installed separately (see below)!
+
+The sripts provided in this repository can be installed using:
+```sh
+pip install .
+```
 
 ### Dependencies
+
+#### Kinfold
 [Kinfold] is part of the [ViennaRNA package], which can be installed via
 bioconda. First, make sure bioconda is set up properly with:
 ```sh
@@ -24,15 +31,12 @@ Second, install or update your ViennaRNA installation.
   ~$ conda install 'viennarna>=2.5.1'
 ```
 
+#### Kinefold
 [Kinefold] must be downloaded (follow the link [Kinefold]). It is important
 to have the executable `kinefold_long_static` placed in the working directory
 where `DrKinefold` is used.
 
-### This repository (wrappers)
-The sripts provided in this repository can be installed using:
-```sh
-pip install .
-```
+### Testing
 Test the functionality via:
 
 ```sh
