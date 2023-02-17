@@ -2,11 +2,15 @@
 
 The \*.drf output files in this directory were produced using the following commandline calls:
 
-- `SRPn_kinefold.drf`: 
-    - cat sequences/SRPn.fa | DrKinefold -p 10 --name SRPn_kinefold
-- `SRPn_kinfold.drf`: 
-    - cat sequences/SRPn.fa | DrKinfold -p 5 -n 10 --name SRPn_kinfold
-
+- SRPn_kinfold.drf: 
+    ```sh
+    cat sequences/SRPn.fa | DrKinfold -p 5 -n 10 --name SRPn_kinfold
+    ```
+- SRPn_kinefold.drf: 
+    ```sh
+    cat sequences/SRPn.fa | DrKinefold -p 10 --name SRPn_kinefold
+    ```
+    
 ## Dependencies
 Remember, `kinefold_long_static` must be in this directory to use `DrKinefold`.
 
