@@ -3,7 +3,6 @@
 # DrKinfold: Produce the DrForna *.drf file format from Kinfold simulations.
 # Written by Stefan Badelt (stefan.badelt@univie.ac.at)
 #
-import re
 import os
 import sys
 import glob
@@ -12,43 +11,12 @@ import numpy as np
 from subprocess import Popen, PIPE
 from multiprocessing import Pool
 
-import RNA
-from .utils import parse_vienna_stdin, get_drf_output_times, combine_drfs
+from .utils import (parse_vienna_stdin, 
+                    get_drf_output_times, 
+                    combine_drfs)
 
-def parse_model_details(parser):
-    """ ViennaRNA Model Details Argument Parser.  """
-    model = parser.add_argument_group('ViennaRNA model details')
-
-    model.add_argument("-T", "--temp", type = float, default = 37.0, 
-        metavar = '<flt>',
-        help = 'Rescale energy parameters to a temperature of temp C.')
-
-    model.add_argument("-4", "--noTetra", action = "store_true",
-        help = """Do not include special tabulated stabilizing 
-        energies for tri-, tetra- and hexaloop hairpins.""")
-
-    model.add_argument("-d", "--dangles", type = int, default = 2, 
-        metavar = '<int>',
-        help = """How to treat dangling end energies for bases adjacent to
-        helices in free ends and multi-loops.""")
-
-    model.add_argument("--noGU", action = "store_true",
-        help = 'Do not allow GU/GT pairs.')
-
-    model.add_argument("--noClosingGU", action = "store_true",
-        help = 'Do not allow GU/GT pairs at the end of helices.')
-
-    model.add_argument("--noLP", action = "store_true",
-        help = ("Only consider structures without lonely pairs. "
-                "(This is never enforced when estimating energy barriers.)"))
-
-    model.add_argument("-P", "--paramFile", action = "store", default = None,
-        metavar = '<str>',
-        help = """Read energy parameters from paramfile, instead of 
-        using the default parameter set.""")
 
 def syscall_kinfold(name, seq,
-                    kinfold = 'Kinfold',
                     start = None,
                     stop = None,
                     fpt  = False,
@@ -85,7 +53,7 @@ def syscall_kinfold(name, seq,
         os.remove(klfile)
 
     kinput = seq + '\n'
-    syscall = [kinfold]
+    syscall = ['Kinfold']
     syscall.extend(['--num', str(int(num))])
     syscall.extend(['--time', str(time)])
     syscall.extend(['--log', name])
@@ -150,11 +118,9 @@ def syscall_kinfold(name, seq,
 def sub_kinfold(*kargs, **kwargs):
     name, seq = kargs
     kinput, kcall = syscall_kinfold(*kargs, **kwargs)
+    print('[in progress:] ' + ' '.join(kcall))
     kefile = name + '.err'
-    klfile = name + '.log'
     with open(kefile, 'w') as ehandle:
-        ehandle.write(kinput + '\n')
-        ehandle.write(' '.join(kcall) + '\n')
         with Popen(kcall, stdin = PIPE, stdout = PIPE, 
                    bufsize = 1, 
                    universal_newlines = True, 
@@ -186,9 +152,9 @@ def run_kinfold(times, basename, seq, num, atupernuc, atupersec, totkftime, temp
                 assert t == len(times)
                 t = 0
                 nsim += 1
-                print(f'# Done with simulation {nsim} in {basename}.drf. ', end = '\r')
+                print(f'[status update:] Done with simulation {nsim} in {basename}.drf. ', end = '\r')
             idc += 1
-    print(f'# Done with kinfold after {nsim} simulations: {basename}.drf. ')
+    print(f'[Done:] Kinfold call for {basename} finished after {nsim} simulations. ')
 
 def parse_drkinfold_args(parser):
     parser.add_argument("--name", default = '', metavar = '<str>',
@@ -223,6 +189,10 @@ def parse_drkinfold_args(parser):
 
     parser.add_argument("--t-log", type = int, default = 30, metavar = '<int>',
             help = """Evenly space output *--t-log* times after transcription on a logarithmic time scale.""")
+
+    parser.add_argument("-T", "--temp", type = float, default = 37.0, 
+        metavar = '<flt>',
+        help = 'Rescale energy parameters to a temperature of temp C.')
     return
 
 def main():
@@ -232,23 +202,13 @@ def main():
         formatter_class = argparse.ArgumentDefaultsHelpFormatter,
         description = 'DrKinfold: Cotranscriptional folding using Kinfold.')
     parse_drkinfold_args(parser)
-    parse_model_details(parser)
     args = parser.parse_args()
 
     # Read Input & Update Arguments
     name, seq = parse_vienna_stdin(sys.stdin)
     if args.name:
         name = args.name
-    md = RNA.md()
-    md.noLP = 0
-    md.logML = 0
-    md.temperature = args.temp
-    md.dangles = args.dangles
-    md.special_hp = not args.noTetra
-    md.noGU = args.noGU
-    md.noGUclosure = args.noClosingGU
-    fc = RNA.fold_compound(seq, md)
-    mss, mfe = fc.mfe()
+    print(f'>{name}\n{seq}')
 
     #
     # Prepare the output times in the *.drf file format.
@@ -261,7 +221,7 @@ def main():
     #
     fid = 1 # Set initial file ID according to what can already be found in tmpdir.
     if os.path.exists(args.tmpdir):
-        for data in glob.glob(f'{args.tmpdir}/{name}_*.drf'):
+        for data in glob.glob(f'{args.tmpdir}/{name}.*.drf'):
             ndata = data.split('/')[-1]
             *pre, nfid, suf = ndata.split('_')
             fid = max(fid, int(nfid)+1)
@@ -278,10 +238,9 @@ def main():
         totkftime = atupernuc * len(seq) + atupersec * args.t_end
         with Pool(processes = args.cpus) as q:
             multiple_results = [q.apply_async(run_kinfold, 
-                (times, f'{args.tmpdir}/{name}_{fid+x}_sims', seq, 
+                (times, f'{args.tmpdir}/{name}.{fid+x:03d}', seq, 
                  args.num, atupernuc, atupersec, totkftime, args.temp)) for x in range(args.processes)]
             [res.get() for res in multiple_results]
-    print(f'# Done with simulations.')
 
     #
     # Combine all drf files from individual simulations to one lage output file.

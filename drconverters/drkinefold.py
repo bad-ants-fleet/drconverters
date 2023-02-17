@@ -180,8 +180,8 @@ def main():
     parse_drkinefold_args(parser)
     args = parser.parse_args()
 
-    if args.num and not os.path.exists(args.kinefold):
-        raise SystemExit(f'Kinfold executable "{args.kinefold}" not found.')
+    if args.processes and not os.path.exists('kinefold_long_static'):
+        raise SystemExit(f'Kinfold executable "kinefold_long_static" not found.')
 
     #
     # Read Input & Update Arguments
@@ -189,9 +189,9 @@ def main():
     name, seq = parse_vienna_stdin(sys.stdin)
     if args.name:
         name = args.name
-
+    print(f'>{name}\n{seq}')
     # NOTE: Adding ext/end, as they are necessary to adjust Kinefold simulations ...
-    name = f'{name}_ext-{args.t_ext}_end-{args.t_end}'
+    #name = f'{name}_ext-{args.t_ext}_end-{args.t_end}'
     
     #
     # Prepare the output times in the *.drf file format.
@@ -214,7 +214,7 @@ def main():
     #
     # The *.dat file seems to be required input?!?
     #
-    if args.num:
+    if args.processes:
         datf = os.path.join(args.tmpdir, f'{name}.dat')
         if os.path.exists(datf):
             print(f"WARNING: Overwriting existing file: {datf}")
@@ -223,23 +223,23 @@ def main():
             dat.write(f'{seq}\n')
 
     #
-    # Do --num separate simulations.
+    # Do --processes separate simulations.
     #
-    for i in range(fid, args.num+fid):
-        print(f'Calling Kinefold #{i}.')
+    for i in range(fid, args.processes+fid):
+        print(f'[in progress:] Calling Kinefold #{i}.')
         infile = os.path.join(args.tmpdir, f'{name}.{i:03d}.in')
         with open(infile, 'w') as k:
             k.write(get_kinefold_input(f'{args.tmpdir}/{name}', i, seq, args.t_ext, args.t_end))
         kcall = ['./kinefold_long_static', infile, '-noprint']
         sub.run(kcall, capture_output = True) 
-    if args.num: # clean up 
+    if args.processes: # clean up 
         os.remove(f'{args.tmpdir}/{name}.w')
         os.remove(f'{args.tmpdir}/{name}.i')
 
     #
     # Convert all rnmfiles to drffiles using the current time vector.
     #
-    for rnmfile in glob(f'{args.tmpdir}/{name}*.rnm'):
+    for rnmfile in glob(f'{args.tmpdir}/{name}.*.rnm'):
         drffile = rnmfile[:-3]+'drf'
         kseq, kname = rnm_to_drf(rnmfile, drffile, times, args.t_ext)
         assert kseq == seq and kname == name

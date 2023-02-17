@@ -1,10 +1,10 @@
 import os
-import re
 from glob import glob
 import numpy as np
 
-def parse_vienna_stdin(stdin, chars = 'ACUGN&acugnTt', skip = '-'):
-    """Parse name and sequence information from file with fasta format.
+
+def parse_vienna_stdin(stdin, chars='ACGUNTacgunt'):
+    """Parse name and sequence from file with fasta format.
 
     Only one input-sequence is allowed at a time.
 
@@ -15,22 +15,19 @@ def parse_vienna_stdin(stdin, chars = 'ACUGN&acugnTt', skip = '-'):
     Returns:
       str, str: name and sequence.
     """
-    name = 'NoName'
+    name = None
     seq = ''
     for line in stdin:
-        if re.match('>', line):
-            if name != 'NoName':
-                raise NotImplementedError(
-                    'Only single-sequence fasta format supported!')
-            else:
-                name = line.strip().split()[0][1:]
+        line = line.strip()
+        if line[0] == '>':
+            assert name is None, "Only single-sequence fasta format supported!"
+            assert seq == '', "Only single-sequence fasta format supported!"
+            name = line.split()[0][1:]
         else:
-            seq += line.strip()
-    seq = seq.translate({ord(c): None for c in skip})
-    m = re.search('[^' + chars + ']', seq)
-    if m:
-        raise ValueError("Does not look like RNA: ('{}' in '{}')".format(
-            m.string[m.span()[0]], seq))
+            warn = set([x for x in line if x not in chars])
+            if len(warn):
+                raise SystemExit(f"Unsupported character(s) in RNA: {warn}")
+            seq += line
     return name, seq
 
 def get_drf_output_times(seqlen, t1, t8, t_lin, t_log):
@@ -70,7 +67,7 @@ def combine_drfs(drffiles, oname, seqlen, times, use_counts = False, get_kp8 = F
                 if t == len(times):
                     t = 0
                     nsim += 1
-    print(f'# Parsed {nsim} simulations from {nfiles} files.')
+    print(f'[collecting data:] Parsed {nsim} simulations from {nfiles} files.')
     #
     # Write the final vector into a separate file for potential further analysis
     #
@@ -93,7 +90,7 @@ def combine_drfs(drffiles, oname, seqlen, times, use_counts = False, get_kp8 = F
     # Write *.drf output file.
     #
     if os.path.exists(oname):
-        print(f"WARNING: Overwriting existing file: {oname}")
+        print(f"[WARNING:] Overwriting existing file: {oname}")
     with open(oname, 'w') as df:
         df.write(f"id time occupancy structure energy\n")
         for t in sorted(odict):
