@@ -58,9 +58,9 @@ them at your own risk -- ask if you have questions -- and do not forget to cite 
 
 The \*.drf output format was primarily developed for [DrForna] visualization.
 If you find this visualization helpful during your analysis, consider citing
-[Tanasie et al. (2023)]
+[Tanasie et al. (2023)].
 
-The program [DrPlotter] provides additional Python visualization options, it is
+The program `DrPlotter` provides additional Python visualization options, it is
 part of the [DrTransformer] Python package, which should be cited as [Badelt et
 al. (2023)].
 
