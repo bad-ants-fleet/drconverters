@@ -35,6 +35,8 @@ Second, install or update your ViennaRNA installation.
 [Kinefold] must be downloaded (follow the link [Kinefold]). It is important
 to have the executable `kinefold_long_static` placed in the working directory
 where `DrKinefold` is used.
+DrKinefold **also depends on ViennaRNA (>=2.5.1)**, due to library functions that 
+help with the conversion of Kinefold output to pseudoknotted dot-bracket strings.
 
 ### Testing
 Test the functionality of wrapper scripts via:
