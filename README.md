@@ -7,7 +7,7 @@ and it can also be plotted in various flavors by the Python script `DrPlotter`
 from the [DrTransformer] package for cotranscriptional folding.
 
 ## Installation
-The sripts provided in this repository can be installed using:
+The scripts provided in this repository can be installed using:
 ```sh
 pip install .
 ```
