@@ -11,6 +11,7 @@ import numpy as np
 from subprocess import Popen, PIPE
 from multiprocessing import Pool
 
+from . import __version__
 from .utils import (parse_vienna_stdin, 
                     get_drf_output_times, 
                     combine_drfs)
@@ -157,6 +158,9 @@ def run_kinfold(times, basename, seq, num, atupernuc, atupersec, totkftime, temp
     print(f'[Done:] Kinfold call for {basename} finished after {nsim} simulations. ')
 
 def parse_drkinfold_args(parser):
+    parser.add_argument('--version', action = 'version', 
+            version = '%(prog)s ' + __version__)
+
     parser.add_argument("--name", default = '', metavar = '<str>',
             help = """Name your output files, name the header of your plots, etc.
             this option overwrites the fasta-header.""")
@@ -223,7 +227,7 @@ def main():
     if os.path.exists(args.tmpdir):
         for data in glob.glob(f'{args.tmpdir}/{name}.*.drf'):
             ndata = data.split('/')[-1]
-            *pre, nfid, suf = ndata.split('_')
+            *pre, nfid, suf = ndata.split('.')
             fid = max(fid, int(nfid)+1)
     else:
         os.mkdir(args.tmpdir)
@@ -245,7 +249,7 @@ def main():
     #
     # Combine all drf files from individual simulations to one lage output file.
     #
-    combine_drfs(f'{args.tmpdir}/{name}_*.drf', f'{name}.drf', len(seq), times, use_counts = False)
+    combine_drfs(f'{args.tmpdir}/{name}*.drf', f'{name}.drf', len(seq), times, use_counts = False)
 
 if __name__ == '__main__':
     main()

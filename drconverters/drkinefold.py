@@ -11,12 +11,18 @@ import argparse
 import numpy as np
 import subprocess as sub
 from random import randint
+from packaging import version
 from glob import glob
 
 import RNA
+from . import __version__
 from .utils import (parse_vienna_stdin, 
                    get_drf_output_times, 
                    combine_drfs)
+
+_MIN_VRNA_VERSION = "2.5.1"
+if version.parse(RNA.__version__) < version.parse(_MIN_VRNA_VERSION):
+    raise ImportError(f'ViennaRNA v{_MIN_VRNA_VERSION} required (found ViennaRNA v{RNA.__version__})!')
 
 def parse_kinefold_structure(line1, line2):
     """ For example:
@@ -68,6 +74,7 @@ def parse_kinefold_structure(line1, line2):
     sseq += lx
     sstr += lc
     return sseq, sstr
+
 
 def rnm_to_drf(rnmfile, drffile, times, t_ext):
     """Translates Kinefold *.rnm file to DrForna *.drf file.
@@ -126,6 +133,9 @@ def rnm_to_drf(rnmfile, drffile, times, t_ext):
     return seq, name
 
 def parse_drkinefold_args(parser):
+    parser.add_argument('--version', action = 'version', 
+            version = '%(prog)s ' + __version__)
+
     parser.add_argument("--name", default = '', metavar = '<str>',
             help = """Name your output files, name the header of your plots, etc.
             this option overwrites the fasta-header.""")
@@ -150,6 +160,7 @@ def parse_drkinefold_args(parser):
             help = """Evenly space output *--t-log* times after transcription on a logarithmic time scale.""")
     return
 
+
 def get_kinefold_input(name, i, seq, t_ext, t_end):
     wdir = os.getcwd()
     return f"""\
@@ -171,6 +182,7 @@ def get_kinefold_input(name, i, seq, t_ext, t_end):
 		# add T i j k or F i j k options here 
 """
 
+
 def main():
     """Translate Kinefold cotranscriptional folding output to DrForna input format.
     """
@@ -182,6 +194,7 @@ def main():
 
     if args.processes and not os.path.exists('kinefold_long_static'):
         raise SystemExit(f'Kinfold executable "kinefold_long_static" not found.')
+
 
     #
     # Read Input & Update Arguments
