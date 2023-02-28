@@ -132,12 +132,13 @@ def sub_kinfold(*kargs, **kwargs):
                 yield line
     return
 
-def run_kinfold(times, basename, seq, num, atupernuc, atupersec, totkftime, temperature):
+def run_kinfold(times, basename, seq, num, atupernuc, atupersec, totkftime, temperature, paramFile):
     idc = 0
     with open(f'{basename}.drf', 'w') as drf:
         drf.write(f"id time occupancy structure energy\n")
         t, nsim = 0, 0
         for line in sub_kinfold(basename, seq, num = num, glen = 1, temp = temperature,
+                                params = paramFile,
                                 grow = atupernuc, time = totkftime, erange = 999999):
             [ss, en, st] = line.split()[0:3]
             stime = float(st)
@@ -197,6 +198,12 @@ def parse_drkinfold_args(parser):
     parser.add_argument("-T", "--temp", type = float, default = 37.0, 
         metavar = '<flt>',
         help = 'Rescale energy parameters to a temperature of temp C.')
+
+    parser.add_argument("-P", "--paramFile", action = "store", default = None,
+        metavar = '<str>',
+        help = """Read energy parameters from paramfile, instead of 
+        using the default parameter set.""")
+
     return
 
 def main():
@@ -243,7 +250,7 @@ def main():
         with Pool(processes = args.cpus) as q:
             multiple_results = [q.apply_async(run_kinfold, 
                 (times, f'{args.tmpdir}/{name}.{fid+x:03d}', seq, 
-                 args.num, atupernuc, atupersec, totkftime, args.temp)) for x in range(args.processes)]
+                 args.num, atupernuc, atupersec, totkftime, args.temp, args.paramFile)) for x in range(args.processes)]
             [res.get() for res in multiple_results]
 
     #
