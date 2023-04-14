@@ -1,3 +1,9 @@
+# About 
+The files here are examples to help users generate the drf file format with
+different cotranscriptional folding software. The particluar simulation results
+are not necessarily useful, as parameters have not been chosen to match
+experimental data.
+
 # Reproducing results:
 
 The \*.drf output files in this directory were produced using the following commandline calls:
