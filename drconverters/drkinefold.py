@@ -30,7 +30,7 @@ def parse_kinefold_structure(line1, line2):
      A U[C G G G G G]C U C U[G U U G]G U U[C U C C C G^C A A C]G C U A C C
      - - -5- - - - - - - - - -6- - - - - - -5' - - - - -6' - - - - - - - -
      =>
-     . . ( ( ( ( ( ( . . . . ( ( ( ( . . . ) ) ) ) ) ) ) ) ) ) . . . . . .
+     . . ( ( ( ( ( ( . . . . [ [ [ [ . . . ) ) ) ) ) ) ] ] ] ] . . . . . .
     """
     hdict = {}
     havail = [True for _ in range(26+1)]

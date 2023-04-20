@@ -51,7 +51,7 @@ def combine_drfs(drffiles, oname, seqlen, times, use_counts = False, get_kp8 = F
         with open(data) as dat:
             t = 0
             for i, line in enumerate(dat):
-                if i ==0:
+                if i == 0:
                     continue
                 _, time, occ, ss, en = line.split()
                 # NOTE: If the line below breaks, then probably because of old

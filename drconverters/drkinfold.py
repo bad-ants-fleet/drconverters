@@ -132,14 +132,14 @@ def sub_kinfold(*kargs, **kwargs):
                 yield line
     return
 
-def run_kinfold(times, basename, seq, num, atupernuc, atupersec, totkftime, temperature, paramFile):
+def run_kinfold(times, basename, seq, num, atupernuc, atupersec, totkftime, temperature, params):
     idc = 0
     with open(f'{basename}.drf', 'w') as drf:
         drf.write(f"id time occupancy structure energy\n")
         t, nsim = 0, 0
         for line in sub_kinfold(basename, seq, num = num, glen = 1, temp = temperature,
-                                params = paramFile,
-                                grow = atupernuc, time = totkftime, erange = 999999):
+                                params = params, grow = atupernuc, time = totkftime, 
+                                erange = 999999):
             [ss, en, st] = line.split()[0:3]
             stime = float(st)
             # Add all drf output times until the give time step
@@ -201,8 +201,8 @@ def parse_drkinfold_args(parser):
 
     parser.add_argument("-P", "--paramFile", action = "store", default = None,
         metavar = '<str>',
-        help = """Read energy parameters from paramfile, instead of 
-        using the default parameter set.""")
+        help = """Read energy parameters from a parameter file, instead of 
+        using the default ViennaRNA parameter set.""")
 
     return
 
