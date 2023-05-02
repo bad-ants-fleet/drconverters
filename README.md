@@ -2,9 +2,11 @@
 
 This repository contains scripts to convert the output of different
 cotranscriptional folding simulators into the \*.drf file format.
-This format is used for visualization by the JavaScript application [DrForna],
-and it can also be plotted in various flavors by the Python script `DrPlotter`
-from the [DrTransformer] package for cotranscriptional folding.
+This format is used for visualization by the JavaScript application [DrForna].
+Note that the [DrTransformer] package for cotranscriptional folding
+natively supports the drf file format, and so this format can also be
+plotted in various flavors by the Python script `DrPlotter`
+from the [DrTransformer] package.
 
 ## Installation
 The scripts provided in this repository can be installed using:
